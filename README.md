@@ -15,7 +15,7 @@ Tested with NVDA 2026.2.
 Download the `.nvda-addon` file from the [Releases](../../releases/latest) page and open it.
 Then restart NVDA.
 
-There are no settings and no new keys. Once it is installed it just works.
+Once it is installed it just works. Its only settings are for updates, below.
 
 ## What it does
 
@@ -44,6 +44,12 @@ the top of the post instead of wherever Reddit left it.
 Alt+right arrow, going forward, is left alone. Nothing changes in any browser other than
 Edge.
 
+## Updates
+
+The add-on checks for updates. Once a day, a little after NVDA starts, the add-on asks its GitHub repository, [github.com/joshknnd1982/browseModeCaretFix](https://github.com/joshknnd1982/browseModeCaretFix), whether a newer version has been released, and says nothing unless there is one. When there is, a dialog shows what's new in a box you can read line by line, and offers to download and install it. The download must match the release's SHA-256 checksum. Then NVDA asks you to confirm the installation and offers to restart. Your settings are kept.
+
+To check yourself, open the NVDA menu, choose **Tools**, then **Check for add-on updates**, and choose **Browse Mode Caret Fix...**. Or press **Check for updates now** in the add-on's settings: NVDA menu, Preferences, Settings, **Browse Mode Caret Fix**. You can also assign a gesture to **Checks for Browse Mode Caret Fix updates** in NVDA's Input Gestures dialog, under **Browse Mode Caret Fix**. To stop the daily check, clear **Check for Browse Mode Caret Fix updates automatically** in the same settings panel.
+
 ## Building it yourself
 
 The add-on is the contents of the `addon` folder, zipped up. There is a script for it:
@@ -53,6 +59,11 @@ python build.py
 ```
 
 It writes `dist/browseModeCaretFix-<version>.nvda-addon`, and a `.sha256` file beside it.
+Upload both to the GitHub release, tagged `v<version>`: the update check reads the tag and
+checks the download against the `.sha256` file.
+
+`addon/globalPlugins/browseModeCaretFix/updater.py` is the update check, shared by all of
+joshknnd1982's add-ons; keep it identical to theirs.
 Any Python 3 will do; it does not need NVDA, SCons or the add-on template.
 
 ## License

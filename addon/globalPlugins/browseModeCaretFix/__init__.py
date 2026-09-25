@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Browse Mode Caret Fix (3.0.23).
+"""Browse Mode Caret Fix (3.0.24).
 
 Restores the browse-mode caret after Alt+Left in Microsoft Edge, including
 single-page applications whose virtual buffer is not rebuilt by navigation.
+Once a day, updater.py checks GitHub for a newer release of the add-on.
 """
 
 import time
@@ -14,9 +15,12 @@ import controlTypes
 import core
 import globalPluginHandler
 import inputCore
+import scriptHandler
 import textInfos
 from logHandler import log
 from NVDAObjects import NVDAObject
+
+from . import updater
 
 ADDON_LOG_PREFIX = "Browse Mode Caret Fix"
 
@@ -461,9 +465,21 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 		browseMode.BrowseModeDocumentTreeInterceptor._activatePosition = _patched_activatePosition
 		inputCore.decide_executeGesture.register(_onDecideExecuteGesture)
+		# The add-on has no settings of its own, so the update settings get a panel to themselves.
+		updater.start(settingsPanel=True)
+
+	@scriptHandler.script(
+		# Translators: Description of a command, shown in the Input Gestures dialog.
+		description=_("Checks for Browse Mode Caret Fix updates"),
+		# Translators: Category of this add-on's commands in the Input Gestures dialog.
+		category=_("Browse Mode Caret Fix"),
+	)
+	def script_checkForUpdates(self, gesture):
+		updater.checkForUpdates()
 
 	def terminate(self):
 		global _pendingNavigation, _pendingRedditOpen
+		updater.stop()
 		_pendingNavigation = None
 		_pendingRedditOpen = None
 		try:
